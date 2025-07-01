@@ -11,8 +11,61 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/drolsen/webpack-hooks/graphs/commit-activity)
 </div>
 
-Reduces a normal Webpack plugin / hook tapping setup, such as:
+---
+## Install
+```
+npm i --save-dev webpack-hooks
+```
+or
+```
+yarn add --dev webpack-hooks
+```
 
+## Webpack Config
+```js
+const WebpackHooks = require('webpack-hooks');
+```
+Instantiate a `new WebpackHooks()` class within Webpack configuration's plugin array and tap hooks as you need:
+
+```js
+
+// Basic configuration
+
+module.exports = {
+  output: {
+    path: '/dist', 
+    publicPath: '/~media/'
+  }  
+  plugins: [
+    new WebpackHooks({
+      beforeRun: (compiler) => { ... },
+      beforeCompile: (compilationParams) => { ... },
+      compilation: (compilation) => { ... },
+      ...
+    })
+  ]
+};
+```
+
+## What are Webpack hooks?
+When Webpack is ran, it runs over various steps before it completes any build. In each of these steps, they offer API hooks for developers to tap into write their custom logic to how things get built.
+
+
+There are a bunch of Webpack hooks available to developers found here:
+https://webpack.js.org/api/compiler-hooks/#hooks
+
+Most hooks before the `thisCompilation` Webpack hook return the `compiler` object (some return more than one parameter), while most hooks after `thisCompilation` return the `compilation` object.
+
+The `compilation` object has even more of its own hooks that can be found here:
+https://webpack.js.org/api/compilation-hooks/
+
+This gives you even more finer control of not only the step of the build you wish to customize, but also down the steps in the actual compilation of your code too.
+
+## Why?
+
+WebpackHooks reduces a the normal Webpack plugin / hook tapping setup process, such as:
+
+#### (Without WebpackHooks)
 ```js
 // Custom plugin to do a simple comment inject
 
@@ -74,6 +127,7 @@ module.exports = {
 
 
 down to just this, directly in your build configuration:
+#### (With WebpackHooks)
 ```js
 const WebpackHooks = require('../index.js');
 const { sources } = require('webpack');
@@ -120,58 +174,3 @@ module.exports = {
 This allow you to craft any hook tapping needs directly within your webpack build configuration without the need for a full plugin file / setup. 
 
 This is helpful if you have smaller customization needs to your webpack instance and don't want to roll out a dedicated plugin file / setup. This is also useful for developers who want to do some rapid prototyping of webpack customization before turning it into a plugin one day.
-
-
-### What are Webpack hooks?
-When Webpack is ran, it runs over various steps before it completes any build. In each of these steps, they offer API hooks for developers to tap into write their custom logic to how things get built.
-
-Historically Webpack's hooks have been designed around the idea of an API dedicated to plugin crafting. 
-With Webpack Hooks however, you can now tap these hooks directly without the need or want to setup an entire plugin for your customization.
-
----
-## Install
-```
-npm i --save-dev webpack-hooks
-```
-or
-```
-yarn add --dev webpack-hooks
-```
-
-## Webpack Config
-```js
-const WebpackHooks = require('webpack-hooks');
-```
-Instantiate a `new WebpackHooks()` class within Webpack configuration's plugin array:
-
-```js
-
-// Basic configuration
-
-module.exports = {
-  output: {
-    path: '/dist', 
-    publicPath: '/~media/'
-  }  
-  plugins: [
-    new WebpackHooks({
-      beforeRun: (compiler) => { ... },
-      beforeCompile: (compilationParams) => { ... },
-      ...
-    })
-  ]
-};
-```
-
-In this Webpack Hooks configuration, we have tapped the `beforeRun` hook, and the `beforeCompile` hook. We then are taking the returned of `compiler` and `compilationParams` of each hook to use and make custom build logic with.
-
-
-There are a bunch of Webpack hooks available to developers found here:
-https://webpack.js.org/api/compiler-hooks/#hooks
-
-Most hooks before the `thisCompilation` Webpack hook return the `compiler` object (some return more than one parameter), while most hooks after `thisCompilation` return the `compilation` object.
-
-The `compilation` object has even more of its own hooks that can be found here:
-https://webpack.js.org/api/compilation-hooks/
-
-This gives you even more finer control of not only the step of the build you wish to customize, but also down the steps in the actual compilation of your code too.
