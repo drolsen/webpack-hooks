@@ -1,0 +1,33 @@
+{
+  "name": "webpack-hooks",
+  "keywords": [
+    "webpack",
+    "hook",
+    "hooks",
+    "webpack hook",
+    "webpack hooks"
+  ],
+  "version": "1.0.0",
+  "description": "Webpack plugin that makes tapping compiler hooks easier",
+  "repository": "drolsen/webpack-hooks",
+  "bugs": {
+    "url": "https://github.com/drolsen/webpack-hooks/issues"
+  },
+  "author": "Devin R. Olsen <devin@devinrolsen.com> (http://devinrolsen.com)",
+  "license": "MIT",
+  "scripts": {
+    "test": "npm run basic-test && npm run ava-test",
+    "basic-test": "webpack --config ./test/basic.config.js --mode production",
+    "ava-test": "ava ./test/ava.test.js"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "devDependencies": {
+    "ava": "4.0.1",
+    "clean-webpack-plugin": "4.0.0",
+    "copy-webpack-plugin": "^10.2.3",
+    "webpack": "5.95.0",
+    "webpack-cli": "4.9.1"
+  }
+}
