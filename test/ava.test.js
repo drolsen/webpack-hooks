@@ -1,18 +1,97 @@
 const test = require('ava');
 const fs = require('fs');
 const path = require('path');
- 
-test('Basic comment injection into bundled assets', t => {
-  let writeTest = true;
-  const testData = fs.readFileSync(path.resolve(__dirname, '../dist/basic/test.js'), 'utf8');
-  
-  if (testData.toString().indexOf('THIS IS A TEST COMMENT') === -1) {
-    writeTest = false;
-  }
 
-  if (writeTest) {
-    t.pass();
-  } else {
-    t.fail();
-  }
+test('Expected compiler hooks were triggered in correct order', t => {
+  const logPath = path.resolve(__dirname, '../dist/hooks.log');
+  const actualLog = fs.readFileSync(logPath, 'utf8').trim().split('\n');
+
+  const expectedLog = [
+    'environment',
+    'afterEnvironment',
+    'entryOption',
+    'afterPlugins',
+    'afterResolvers',
+    'initialize',
+    'beforeRun',
+    'run',
+    'watchRun',
+    'normalModuleFactory',
+    'contextModuleFactory',
+    'beforeCompile',
+    'compile',
+    'thisCompilation',
+    'compilation',
+    'make',
+    'afterCompile',
+    'shouldEmit',
+    'emit',
+    'afterEmit',
+    'assetEmitted',
+    'done',
+    'invalid',
+    'watchClose',
+    'shutdown',
+    'infrastructureLog',
+    'buildModule',
+    'succeedModule',
+    'finishModules',
+    'seal',
+    'optimizeDependencies',
+    'afterOptimizeDependencies',
+    'afterChunks',
+    'optimize',
+    'optimizeModules',
+    'afterOptimizeModules',
+    'optimizeChunks',
+    'afterOptimizeChunks',
+    'optimizeTree',
+    'afterOptimizeTree',
+    'optimizeChunkModules',
+    'afterOptimizeChunkModules',
+    'shouldRecord',
+    'reviveModules',
+    'beforeModuleIds',
+    'moduleIds',
+    'optimizeModuleIds',
+    'afterOptimizeModuleIds',
+    'reviveChunks',
+    'beforeChunkIds',
+    'chunkIds',
+    'optimizeChunkIds',
+    'afterOptimizeChunkIds',
+    'recordModules',
+    'recordChunks',
+    'beforeModuleHash',
+    'afterModuleHash',
+    'beforeHash',
+    'afterHash',
+    'recordHash',
+    'record',
+    'beforeModuleAssets',
+    'additionalChunkAssets',
+    'shouldGenerateChunkAssets',
+    'beforeChunkAssets',
+    'additionalAssets',
+    'optimizeChunkAssets',
+    'afterOptimizeChunkAssets',
+    'optimizeAssets',
+    'afterOptimizeAssets',
+    'processAssets',
+    'afterProcessAssets',
+    'needAdditionalSeal',
+    'afterSeal',
+    'chunkHash',
+    'chunkAsset',
+    'assetPath',
+    'needAdditionalPass',
+    'normalModuleLoader',
+    'statsPreset',
+    'statsNormalize',
+    'statsFactoryExtract',
+    'statsFactoryResults',
+    'statsPrinter'
+  ];
+
+  t.deepEqual(actualLog, expectedLog);
 });
