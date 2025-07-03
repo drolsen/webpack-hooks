@@ -75,11 +75,20 @@ WebpackHooks removes that friction. Just define the hooks you need, right inside
 ### Without WebpackHooks
 
 ```js
-class MyPlugin {
+class MyWebpackPlugin {
+  constructor(options = {}) {
+    this.options = {
+      ...options
+    };
+  }
+
   apply(compiler) {
-    compiler.hooks.entryOption.tap({ name: 'MyPlugin' }, (context, entry) => {
-      console.log(context, entry);
-    });
+    compiler.hooks.entryOptions.tap(
+      { name: 'MyWebpackPlugin' }, 
+      (context, entry) => {
+        console.log(context, entry);
+      }
+    );
   }
 }
 ```
