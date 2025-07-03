@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/assets/logo.png" width="300" />
+  <img src="/assets/logo.jpg" width="300" />
   <p style="margin-top: 25px;">A Webpack plugin that simplifies hook tapping by letting you define them directly in your config.</p>
 
 [![Build Status](https://app.travis-ci.com/drolsen/webpack-hooks.svg?branch=master)](https://app.travis-ci.com/drolsen/webpack-hooks)
