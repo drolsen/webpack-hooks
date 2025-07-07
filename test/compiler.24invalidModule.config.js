@@ -30,7 +30,7 @@ module.exports = {
           triggered = true;
           setTimeout(() => {
             // Trigger file change to fire `invalid`
-            fs.appendFileSync(testFilePath, `\n// touch ${Date.now()}\n`);
+            fs.writeFileSync(testFilePath, `// compiler.24invalidModule was here to trigger a file change: ${new Date()}\n`);
           }, 500);
         }
         global.compiler = stats.compilation.compiler;
