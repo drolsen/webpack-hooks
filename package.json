@@ -7,9 +7,12 @@
     "webpack hook",
     "webpack hooks"
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Webpack plugin that makes tapping compiler hooks easier",
-  "repository": "drolsen/webpack-hooks",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drolsen/webpack-hooks.git"
+  },
   "bugs": {
     "url": "https://github.com/drolsen/webpack-hooks/issues"
   },
@@ -106,7 +109,7 @@
     "compilation.statsPreset": "webpack --config ./test/compilation.60statsPreset.config.js",
     "compilation.statsNormalize": "webpack --config ./test/compilation.61statsNormalize.config.js",
     "compilation.statsFactory": "webpack --config ./test/compilation.62statsFactory.config.js",
-    "compilation.statsPrinter": "webpack --config ./test/compilation.63statsPrinter.config.js",    
+    "compilation.statsPrinter": "webpack --config ./test/compilation.63statsPrinter.config.js",
     "ava-test": "ava ./test/ava.test.js"
   },
   "engines": {
