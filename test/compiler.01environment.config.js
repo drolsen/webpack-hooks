@@ -23,7 +23,7 @@ module.exports = {
     /*new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: [path.resolve('./dist')]
     }),*/
-    new WebpackHooks({
+    new WebpackHooks('FunnyBunny', {
       environment: () => {
         fs.writeFileSync(logPath, 'environment\n');
       }

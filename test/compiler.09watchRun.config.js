@@ -21,7 +21,7 @@ module.exports = {
   watch: true,
   plugins: [
     new WebpackHooks({
-      watchRun:  () => {
+      watchRun: () => {
         if (compiler && typeof compiler === 'object') {
           fs.appendFileSync(logPath, 'watchRun\n');
           setTimeout(() => {

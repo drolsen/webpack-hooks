@@ -1,6 +1,6 @@
 <div align="center">
   <img src="/assets/logo.jpg" width="300" />
-  <p style="margin-top: 25px;">A Webpack plugin that simplifies hook tapping by letting you define them directly in your config.</p>
+  <p style="margin-top: 25px;">A Webpack plugin that simplifies hook tapping.</p>
 
 [![Build Status](https://app.travis-ci.com/drolsen/webpack-hooks.svg?branch=master)](https://app.travis-ci.com/drolsen/webpack-hooks)
 [![Minimum node.js version](https://badgen.net/badge/node/%3E=18.17.0/green)](https://npmjs.com/package/webpack-hooks)
@@ -18,12 +18,13 @@
 When Webpack runs, it goes through a sequence of build phases. During each phase, it exposes various hooks that developers can tap into to customize behavior.
 
 You can find a full list of compiler hooks here:  
-👉 https://webpack.js.org/api/compiler-hooks/
+https://webpack.js.org/api/compiler-hooks/
 
 Most compiler hooks (before `thisCompilation`) provide the `compiler` object. After that, you typically get the `compilation` object — which exposes its own powerful hook set:  
-👉 https://webpack.js.org/api/compilation-hooks/
+https://webpack.js.org/api/compilation-hooks/
 
 This allows deep control over both the build life-cycle and the actual compilation pipeline.
+Webpack-hooks plugin allows you to tap both compiler and compilation hooks.
 
 ---
 
@@ -138,6 +139,35 @@ new WebpackHooks({
 
 ---
 
+## Compiler and Compilation hooks
+
+Webpack-hooks plugin indeed supports both Compiler and Compilation hook tapping.
+
+For instance:
+```js
+new WebpackHooks({
+  compilation: {
+    statsFactory: {
+      result: tapOptions(
+        { for: 'compilation' }, 
+        (result, context) => {
+          ...
+        }
+      ),          
+      extract: tapOptions(
+        { for: 'compilation' }, 
+        (object, compilation) => {
+          ...
+        }
+      )
+    }
+  }
+})
+```
+In the above example we are tapping Compiler.Compilation Compilation.statusFactor and ultimately statusFactory.results and statusFactory.extract hooks.
+
+---
+
 ## tapOptions()
 
 Some hooks (like `processAssets`) require tap options such as `stage` or `additionalAssets`.
@@ -164,11 +194,30 @@ new WebpackHooks({
 
 ---
 
+## HookMaps and .for('my-preset')
+
+Some hooks (like compilation's `statsPreset` or `statsFactory`'s deeper hooks) are what is called a HookMap.
+This means that in normal plugin syntax, you must chain in a `.for('my-preset')` into your tapping on hooks that are HookMaps.
+
+In Webpack-hooks plugin, HookMap value is passed in under a tapOptions as a `{ for: 'my-preset' }`:
+
+```js
+new WebpackHooks({
+  compilation: {
+    statsPreset: tapOptions({ for: 'normal' }, (options) => {
+      console.log(options);
+    })
+  }
+})
+```
+
+---
+
 ## Hook Names
 
 Normally, Webpack requires a `name` property for each hook tap. With WebpackHooks, it's optional — the fallback is `'WebpackHooks'`.
 
-If you want to set a custom name:
+If you want to set a custom name on a hook endpoint:
 
 ```js
 new WebpackHooks({
@@ -178,7 +227,7 @@ new WebpackHooks({
 });
 ```
 
-if you want to set a custom global value for all your hook names:
+if you want to set a custom global value for all hook names:
 ```js
 new MyWebpackPlugin('MyHookName', {
   entryOption: (context, entry) => {
@@ -187,7 +236,7 @@ new MyWebpackPlugin('MyHookName', {
 })
 ```
 
-or if you don't care what the names are and don't mind they will be named 'WebpackHooks':
+if you don't care, and don't mind they will be named 'WebpackHooks':
 ```js
 new MyWebpackPlugin({
   entryOption: (context, entry) => {
