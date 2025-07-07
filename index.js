@@ -1,5 +1,5 @@
-const HOOK_TAP_OPTIONS = Symbol('WebpackHookTapOptions');
-
+global.compiler = {};
+global.compilation = {};
 global.tapOptions = (options, fn, compilation) => Object.assign(
   fn, {
     tapOptions: {
@@ -8,16 +8,13 @@ global.tapOptions = (options, fn, compilation) => Object.assign(
   }
 );
 
-global.compiler = {};
-global.compilation = {};
-
-function getTapType(fn) {
+const getTapType = (fn) => {
   if (fn.constructor.name === 'AsyncFunction') return 'tapPromise';
   // if (fn.length >= 2) return 'tapAsync';
   return 'tap';
 }
 
-const RecursiveHookTapping = (hooks, parents = [ global.compiler ]) => {
+const RecursiveHookTapping = (hooks, parents = [ global.compiler ], hooksName) => {
   let foundHook = false;
   for (const hookName in hooks) {
     const hook = hooks[hookName];
@@ -28,8 +25,8 @@ const RecursiveHookTapping = (hooks, parents = [ global.compiler ]) => {
       if (parent.hooks[hookName]) {
         // Tap and Tap more
         if (typeof hook === 'object') {
-          parent.hooks[hookName][getTapType(hook)]('WebpackHooks', (...callbackParams) => {
-            RecursiveHookTapping(hook, callbackParams);
+          parent.hooks[hookName][getTapType(hook)](hooksName, (...callbackParams) => {
+            RecursiveHookTapping(hook, callbackParams, hooksName);
           });
         }
 
@@ -38,11 +35,11 @@ const RecursiveHookTapping = (hooks, parents = [ global.compiler ]) => {
           // If user has defined a tapOptions, but forgot a name, fall back to 'WebpackHooks'
           if (hook.tapOptions) {
             if (!hook.tapOptions.name) {
-              hook.tapOptions.name = 'WebpackHooks';
+              hook.tapOptions.name = hooksName;
             }
           } else {
             hook.tapOptions = {
-              name: 'WebpackHooks'
+              name: hooksName
             };
           }
 
@@ -74,13 +71,19 @@ const RecursiveHookTapping = (hooks, parents = [ global.compiler ]) => {
 }
 
 class WebpackHooks {
-  constructor(hooks) {
-    this.hooks = hooks;
+  constructor(...options) {
+    if (options.length === 1) {
+      this.hooks = options[0];
+      this.hooksName = 'WebpackHooks';
+    } else {
+      this.hooksName = options[0] || 'WebpackHooks';
+      this.hooks = options[1];
+    }
   }
 
   apply(compiler) {
     global.compiler = compiler;
-    RecursiveHookTapping(this.hooks);
+    RecursiveHookTapping(this.hooks, [ global.compiler ], this.hooksName);
   }
 }
 
